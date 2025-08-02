@@ -15,3 +15,10 @@ releaseブランチにpushされるとvueプロジェクトがbuildされて中�
 - レポジトリの設定>Actions>Workflow permissions>✅Read and write permissions
 
 - Github actionは動作させるブランチ上におく必要がある？んだっけか
+
+
+## Vue
+
+```npm init vite@latest app```
+
+VueとJavaScriptを指定
