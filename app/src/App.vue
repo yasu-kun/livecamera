@@ -1,30 +1,56 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import YouTubePlayer from './components/YouTubePlayer.vue'
+
+const videos = [
+  {
+    id: 'VWpOgCVKoK4',
+    title: '沖縄'
+  },
+  {
+    id: 's--MDmshT3I',
+    title: '函館山'
+  },
+  {
+    id: 'h3pbOPE3kLs',
+    title: '那覇空港'
+  },
+  {
+    id: 'DU-tsAEboZo',
+    title: '羽田空港'
+  }
+]
 </script>
 
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="app-container">
+    <h1>YouTube監視カメラ</h1>
+    <div class="video-grid">
+      <YouTubePlayer
+        v-for="video in videos"
+        :key="video.id"
+        :video-id="video.id"
+        :title="video.title"
+      />
+    </div>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.app-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
 }
 </style>

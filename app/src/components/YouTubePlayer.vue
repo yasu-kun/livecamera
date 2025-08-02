@@ -1,0 +1,76 @@
+<script setup>
+defineProps({
+  videoId: {
+    type: String,
+    required: true
+  },
+  title: {
+    type: String,
+    default: ''
+  }
+})
+</script>
+
+<template>
+  <div class="youtube-player">
+    <div class="player-container">
+      <iframe
+        :src="`https://www.youtube.com/embed/${videoId}`"
+        :title="title"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+    <div class="player-info">
+      <h3>{{ title }}</h3>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.youtube-player {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  flex: 1 1 calc(50% - 20px); /* 2列表示に変更 */
+  min-width: 400px; /* 最小幅を設定 */
+}
+
+.youtube-player:hover {
+  transform: translateY(-5px);
+}
+
+.player-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 のアスペクト比 */
+  height: 0;
+  overflow: hidden;
+}
+
+.player-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.player-info {
+  padding: 10px;
+  background-color: #f8f9fa;
+}
+
+.player-info h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+</style>
