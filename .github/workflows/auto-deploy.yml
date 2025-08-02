@@ -13,7 +13,18 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Python (必要なら)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies and build Vue app
+        run: |
+          cd app
+          npm install
+          npm run build
+
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
