@@ -37,10 +37,5 @@ jobs:
 
       - name: Deploy to gh-pages
         run: |
-<<<<<<< HEAD
-          ghp-import -n -f app/docs
-          git push -f origin gh-pages
-=======
           ghp-import -n -f app/dist
           git push -f origin gh-pages
->>>>>>> dev_vue
