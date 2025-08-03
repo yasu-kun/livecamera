@@ -122,6 +122,12 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+#app {
+  display: flex;
+  height: 100vh;
+  overflow-x: hidden; /* ← これを auto に変えるか削除 */
+}
+
 .app-container {
   position: relative;
   min-height: 100vh;
