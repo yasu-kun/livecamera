@@ -6,37 +6,42 @@
     <div class="sidebar-content">
       <div class="setting-item">
         <label>グリッド列数: {{ gridColumns }}列</label>
-        <input 
-          type="range" 
-          min="1" 
-          max="6" 
+        <v-slider
           v-model="gridColumns"
-          @input="updateSettings"
-          class="slider"
-        />
+          :min="1"
+          :max="6"
+          :step="1"
+          thumb-label
+          @update:model-value="updateSettings"
+          color="primary"
+        ></v-slider>
       </div>
       
       <div class="setting-item">
         <label>動画サイズ: {{ videoSizeLabels[videoSize] }}</label>
-        <input 
-          type="range" 
-          min="0" 
-          max="2" 
+        <v-slider
           v-model="videoSize"
-          @input="updateSettings"
-          class="slider"
-        />
+          :min="0"
+          :max="2"
+          :step="1"
+          :tick-labels="videoSizeLabels"
+          thumb-label
+          @update:model-value="updateSettings"
+          color="primary"
+        ></v-slider>
       </div>
       
       <div class="setting-item">
         <h4>動画制御</h4>
         <div class="control-buttons">
-          <button @click="playAllVideos" class="control-btn play-btn">
-            ▶ 一括再生
-          </button>
-          <button @click="muteAllVideos" class="control-btn mute-btn">
-            {{ isMuted ? '🔊 ミュート解除' : '🔇 一括ミュート' }}
-          </button>
+          <v-btn @click="playAllVideos" color="success" variant="flat" block>
+            <v-icon left>mdi-play</v-icon>
+            一括再生
+          </v-btn>
+          <v-btn @click="muteAllVideos" color="error" variant="flat" block>
+            <v-icon left>{{ isMuted ? 'mdi-volume-high' : 'mdi-volume-off' }}</v-icon>
+            {{ isMuted ? 'ミュート解除' : '一括ミュート' }}
+          </v-btn>
         </div>
       </div>
     </div>
@@ -142,71 +147,12 @@ export default {
   margin-right: 8px;
 }
 
-.slider {
-  width: 100%;
-  height: 6px;
-  border-radius: 5px;
-  background: #34495e;
-  outline: none;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-}
-
-.slider:hover {
-  opacity: 1;
-}
-
-.slider::-webkit-slider-thumb {
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #3498db;
-  cursor: pointer;
-}
-
-.slider::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #3498db;
-  cursor: pointer;
-  border: none;
-}
 
 .control-buttons {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-top: 10px;
-}
-
-.control-btn {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.play-btn {
-  background-color: #27ae60;
-  color: white;
-}
-
-.play-btn:hover {
-  background-color: #229954;
-}
-
-.mute-btn {
-  background-color: #e74c3c;
-  color: white;
-}
-
-.mute-btn:hover {
-  background-color: #c0392b;
 }
 
 .setting-item h4 {

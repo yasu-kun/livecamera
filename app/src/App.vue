@@ -88,9 +88,15 @@ onUnmounted(() => {
 
 <template>
   <div class="app-container">
-    <button class="sidebar-toggle" @click="toggleSidebar">
-      ☰ 設定
-    </button>
+    <v-btn
+      @click="toggleSidebar"
+      class="sidebar-toggle"
+      color="primary"
+      icon
+      variant="flat"
+    >
+      <v-icon>mdi-menu</v-icon>
+    </v-btn>
     
     <Sidebar 
       :is-open="sidebarOpen" 
@@ -126,18 +132,6 @@ onUnmounted(() => {
   top: 20px;
   left: 20px;
   z-index: 1001;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-}
-
-.sidebar-toggle:hover {
-  background-color: #2980b9;
 }
 
 .main-content {
