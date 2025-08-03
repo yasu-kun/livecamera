@@ -22,7 +22,7 @@
         <v-slider
           v-model="videoSize"
           :min="0"
-          :max="2"
+          :max="9"
           :step="1"
           :tick-labels="videoSizeLabels"
           thumb-label
@@ -62,7 +62,7 @@ export default {
       gridColumns: 3,
       videoSize: 1,
       isMuted: false,
-      videoSizeLabels: ['小', '中', '大']
+      videoSizeLabels: ['0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '4.5', '5']
     }
   },
   methods: {

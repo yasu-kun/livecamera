@@ -58,7 +58,7 @@ const handleToggleMuteAllVideos = (shouldMute) => {
 }
 
 const gridStyle = computed(() => {
-  const sizeMultipliers = [0.7, 1, 1.4]
+  const sizeMultipliers = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
   const baseMinWidth = 250
   const minWidth = baseMinWidth * sizeMultipliers[videoSize.value]
   
