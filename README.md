@@ -21,4 +21,6 @@ releaseブランチにpushされるとvueプロジェクトがbuildされて中�
 
 ```npm init vite@latest app```
 
+```npm add vuetify```
+
 VueとJavaScriptを指定
