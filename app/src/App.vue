@@ -24,7 +24,6 @@ const videos = [
 
 const sidebarOpen = ref(false)
 const gridColumns = ref(3)
-const autoPlay = ref(false)
 const playerRefs = ref([])
 
 const toggleSidebar = () => {
@@ -33,7 +32,6 @@ const toggleSidebar = () => {
 
 const handleSettingsUpdate = (settings) => {
   gridColumns.value = parseInt(settings.gridColumns)
-  autoPlay.value = settings.autoPlay
 }
 
 const handlePlayAllVideos = () => {
@@ -85,7 +83,6 @@ const gridStyle = computed(() => {
           :ref="el => playerRefs[index] = el"
           :video-id="video.id"
           :title="video.title"
-          :auto-play="autoPlay"
         />
       </div>
     </div>

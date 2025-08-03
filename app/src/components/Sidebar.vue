@@ -17,17 +17,6 @@
       </div>
       
       <div class="setting-item">
-        <label>
-          <input 
-            type="checkbox" 
-            v-model="autoPlay"
-            @change="updateSettings"
-          >
-          自動再生
-        </label>
-      </div>
-      
-      <div class="setting-item">
         <h4>動画制御</h4>
         <div class="control-buttons">
           <button @click="playAllVideos" class="control-btn play-btn">
@@ -54,15 +43,13 @@ export default {
   data() {
     return {
       gridColumns: 3,
-      autoPlay: false,
       isMuted: false
     }
   },
   methods: {
     updateSettings() {
       this.$emit('settings-updated', {
-        gridColumns: this.gridColumns,
-        autoPlay: this.autoPlay
+        gridColumns: this.gridColumns
       })
     },
     playAllVideos() {

@@ -9,10 +9,6 @@ const props = defineProps({
   title: {
     type: String,
     default: ''
-  },
-  autoPlay: {
-    type: Boolean,
-    default: false
   }
 })
 
@@ -61,7 +57,7 @@ defineExpose({
     <div class="player-container">
       <iframe
         ref="iframeRef"
-        :src="`https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=${autoPlay ? 1 : 0}`"
+        :src="`https://www.youtube.com/embed/${videoId}?enablejsapi=1`"
         :title="title"
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
