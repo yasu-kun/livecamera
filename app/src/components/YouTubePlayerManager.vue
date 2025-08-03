@@ -7,7 +7,8 @@ const videoIds = [
   'VWpOgCVKoK4',
   's--MDmshT3I', 
   'h3pbOPE3kLs',
-  'DU-tsAEboZo'
+  'DU-tsAEboZo',
+  'X6C2hpunZ8c'
 ]
 
 const isMuted = ref(false)
