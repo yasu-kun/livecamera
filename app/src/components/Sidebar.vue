@@ -5,36 +5,15 @@
     </div>
     <div class="sidebar-content">
       <div class="setting-item">
-        <label>グリッド列数:</label>
-        <div class="radio-group">
-          <label>
-            <input 
-              type="radio" 
-              value="3" 
-              v-model="gridColumns"
-              @change="updateSettings"
-            >
-            3列
-          </label>
-          <label>
-            <input 
-              type="radio" 
-              value="4" 
-              v-model="gridColumns"
-              @change="updateSettings"
-            >
-            4列
-          </label>
-          <label>
-            <input 
-              type="radio" 
-              value="5" 
-              v-model="gridColumns"
-              @change="updateSettings"
-            >
-            5列
-          </label>
-        </div>
+        <label>グリッド列数: {{ gridColumns }}列</label>
+        <input 
+          type="range" 
+          min="1" 
+          max="6" 
+          v-model="gridColumns"
+          @input="updateSettings"
+          class="slider"
+        />
       </div>
       
       <div class="setting-item">
@@ -46,6 +25,18 @@
           >
           自動再生
         </label>
+      </div>
+      
+      <div class="setting-item">
+        <h4>動画制御</h4>
+        <div class="control-buttons">
+          <button @click="playAllVideos" class="control-btn play-btn">
+            ▶ 一括再生
+          </button>
+          <button @click="muteAllVideos" class="control-btn mute-btn">
+            {{ isMuted ? '🔊 ミュート解除' : '🔇 一括ミュート' }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -62,8 +53,9 @@ export default {
   },
   data() {
     return {
-      gridColumns: '3',
-      autoPlay: false
+      gridColumns: 3,
+      autoPlay: false,
+      isMuted: false
     }
   },
   methods: {
@@ -72,6 +64,13 @@ export default {
         gridColumns: this.gridColumns,
         autoPlay: this.autoPlay
       })
+    },
+    playAllVideos() {
+      this.$emit('play-all-videos')
+    },
+    muteAllVideos() {
+      this.isMuted = !this.isMuted
+      this.$emit('toggle-mute-all-videos', this.isMuted)
     }
   }
 }
@@ -139,5 +138,78 @@ export default {
 .setting-item input[type="checkbox"] {
   transform: scale(1.2);
   margin-right: 8px;
+}
+
+.slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 5px;
+  background: #34495e;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3498db;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3498db;
+  cursor: pointer;
+  border: none;
+}
+
+.control-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.control-btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.play-btn {
+  background-color: #27ae60;
+  color: white;
+}
+
+.play-btn:hover {
+  background-color: #229954;
+}
+
+.mute-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.mute-btn:hover {
+  background-color: #c0392b;
+}
+
+.setting-item h4 {
+  margin: 0 0 10px 0;
+  color: #ecf0f1;
+  font-size: 16px;
 }
 </style>

@@ -25,6 +25,7 @@ const videos = [
 const sidebarOpen = ref(false)
 const gridColumns = ref(3)
 const autoPlay = ref(false)
+const playerRefs = ref([])
 
 const toggleSidebar = () => {
   sidebarOpen.value = !sidebarOpen.value
@@ -33,6 +34,26 @@ const toggleSidebar = () => {
 const handleSettingsUpdate = (settings) => {
   gridColumns.value = parseInt(settings.gridColumns)
   autoPlay.value = settings.autoPlay
+}
+
+const handlePlayAllVideos = () => {
+  playerRefs.value.forEach(player => {
+    if (player) {
+      player.playVideo()
+    }
+  })
+}
+
+const handleToggleMuteAllVideos = (shouldMute) => {
+  playerRefs.value.forEach(player => {
+    if (player) {
+      if (shouldMute) {
+        player.muteVideo()
+      } else {
+        player.unmuteVideo()
+      }
+    }
+  })
 }
 
 const gridStyle = computed(() => {
@@ -51,14 +72,17 @@ const gridStyle = computed(() => {
     <Sidebar 
       :is-open="sidebarOpen" 
       @settings-updated="handleSettingsUpdate"
+      @play-all-videos="handlePlayAllVideos"
+      @toggle-mute-all-videos="handleToggleMuteAllVideos"
     />
     
     <div class="main-content" :class="{ 'sidebar-open': sidebarOpen }">
       <h1>YouTube監視カメラ</h1>
       <div class="video-grid" :style="gridStyle">
         <YouTubePlayer
-          v-for="video in videos"
+          v-for="(video, index) in videos"
           :key="video.id"
+          :ref="el => playerRefs[index] = el"
           :video-id="video.id"
           :title="video.title"
           :auto-play="autoPlay"

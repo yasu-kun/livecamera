@@ -1,5 +1,7 @@
 <script setup>
-defineProps({
+import { ref, onMounted, defineExpose } from 'vue'
+
+const props = defineProps({
   videoId: {
     type: String,
     required: true
@@ -7,7 +9,50 @@ defineProps({
   title: {
     type: String,
     default: ''
+  },
+  autoPlay: {
+    type: Boolean,
+    default: false
   }
+})
+
+const iframeRef = ref(null)
+const isPlaying = ref(false)
+const isMuted = ref(false)
+
+const playVideo = () => {
+  if (iframeRef.value && iframeRef.value.contentWindow) {
+    iframeRef.value.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*')
+    isPlaying.value = true
+  }
+}
+
+const pauseVideo = () => {
+  if (iframeRef.value && iframeRef.value.contentWindow) {
+    iframeRef.value.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*')
+    isPlaying.value = false
+  }
+}
+
+const muteVideo = () => {
+  if (iframeRef.value && iframeRef.value.contentWindow) {
+    iframeRef.value.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*')
+    isMuted.value = true
+  }
+}
+
+const unmuteVideo = () => {
+  if (iframeRef.value && iframeRef.value.contentWindow) {
+    iframeRef.value.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*')
+    isMuted.value = false
+  }
+}
+
+defineExpose({
+  playVideo,
+  pauseVideo,
+  muteVideo,
+  unmuteVideo
 })
 </script>
 
@@ -15,7 +60,8 @@ defineProps({
   <div class="youtube-player">
     <div class="player-container">
       <iframe
-        :src="`https://www.youtube.com/embed/${videoId}`"
+        ref="iframeRef"
+        :src="`https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=${autoPlay ? 1 : 0}`"
         :title="title"
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
