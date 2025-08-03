@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import YouTubePlayer from './components/YouTubePlayer.vue'
 import Sidebar from './components/Sidebar.vue'
 
@@ -24,7 +24,9 @@ const videos = [
 
 const sidebarOpen = ref(false)
 const gridColumns = ref(3)
+const videoSize = ref(1)
 const playerRefs = ref([])
+const windowWidth = ref(window.innerWidth)
 
 const toggleSidebar = () => {
   sidebarOpen.value = !sidebarOpen.value
@@ -32,6 +34,7 @@ const toggleSidebar = () => {
 
 const handleSettingsUpdate = (settings) => {
   gridColumns.value = parseInt(settings.gridColumns)
+  videoSize.value = parseInt(settings.videoSize)
 }
 
 const handlePlayAllVideos = () => {
@@ -55,9 +58,31 @@ const handleToggleMuteAllVideos = (shouldMute) => {
 }
 
 const gridStyle = computed(() => {
+  const sizeMultipliers = [0.7, 1, 1.4]
+  const baseMinWidth = 250
+  const minWidth = baseMinWidth * sizeMultipliers[videoSize.value]
+  
+  // サイドバーの幅を考慮
+  const availableWidth = windowWidth.value - (sidebarOpen.value ? 250 : 0) - 80
+  const maxColumns = Math.max(1, Math.floor(availableWidth / (minWidth + 40)))
+  const actualColumns = Math.min(gridColumns.value, maxColumns)
+  
   return {
-    'grid-template-columns': `repeat(${gridColumns.value}, 1fr)`
+    'grid-template-columns': `repeat(${actualColumns}, minmax(${minWidth}px, 1fr))`,
+    'grid-auto-rows': 'min-content'
   }
+})
+
+const handleResize = () => {
+  windowWidth.value = window.innerWidth
+}
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
 })
 </script>
 
@@ -83,6 +108,7 @@ const gridStyle = computed(() => {
           :ref="el => playerRefs[index] = el"
           :video-id="video.id"
           :title="video.title"
+          :video-size="videoSize"
         />
       </div>
     </div>
@@ -134,8 +160,9 @@ h1 {
 
 .video-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+  padding: 0 20px;
+  justify-items: center;
 }
 
 @media (max-width: 768px) {
@@ -144,7 +171,21 @@ h1 {
   }
   
   .video-grid {
-    grid-template-columns: 1fr;
+    padding: 0 10px;
+  }
+  
+  .sidebar-toggle {
+    top: 10px;
+    left: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .video-grid {
+    gap: 15px;
+    padding: 0 5px;
   }
 }
 </style>

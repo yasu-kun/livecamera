@@ -17,6 +17,18 @@
       </div>
       
       <div class="setting-item">
+        <label>動画サイズ: {{ videoSizeLabels[videoSize] }}</label>
+        <input 
+          type="range" 
+          min="0" 
+          max="2" 
+          v-model="videoSize"
+          @input="updateSettings"
+          class="slider"
+        />
+      </div>
+      
+      <div class="setting-item">
         <h4>動画制御</h4>
         <div class="control-buttons">
           <button @click="playAllVideos" class="control-btn play-btn">
@@ -43,13 +55,16 @@ export default {
   data() {
     return {
       gridColumns: 3,
-      isMuted: false
+      videoSize: 1,
+      isMuted: false,
+      videoSizeLabels: ['小', '中', '大']
     }
   },
   methods: {
     updateSettings() {
       this.$emit('settings-updated', {
-        gridColumns: this.gridColumns
+        gridColumns: this.gridColumns,
+        videoSize: this.videoSize
       })
     },
     playAllVideos() {

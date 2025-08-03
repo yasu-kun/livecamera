@@ -9,6 +9,10 @@ const props = defineProps({
   title: {
     type: String,
     default: ''
+  },
+  videoSize: {
+    type: Number,
+    default: 1
   }
 })
 
@@ -80,8 +84,8 @@ defineExpose({
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
-  flex: 1 1 calc(50% - 20px); /* 2列表示に変更 */
-  min-width: 400px; /* 最小幅を設定 */
+  width: 100%;
+  max-width: 100%;
 }
 
 .youtube-player:hover {
