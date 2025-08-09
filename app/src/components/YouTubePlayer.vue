@@ -9,6 +9,10 @@ const props = defineProps({
   index: {
     type: Number,
     required: true
+  },
+  videoWidth: {
+    type: Number,
+    default: 560
   }
 })
 
@@ -57,20 +61,28 @@ function unMute() {
   }
 }
 
+function setSize(width) {
+  const w = Math.max(120, Math.min(1920, Number(width) || 560))
+  const h = Math.round(w * 9 / 16)
+  if (player.value && player.value.setSize) {
+    player.value.setSize(w, h)
+  }
+}
+
 // Expose methods to parent component
 defineExpose({
   playVideo,
   mute,
   unMute,
-  player
+  player,
+  setSize
 })
 </script>
 
 <template>
   <v-col
-    cols="12"
-    md="6"
-    class="d-flex justify-center"
+    cols="auto"
+    class="d-flex pa-0"
   >
     <div :id="`player-${index}`"></div>
   </v-col>

@@ -13,6 +13,7 @@ const videoIds = [
 
 const isMuted = ref(false)
 const playerRefs = ref([])
+const videoWidth = ref(560)
 
 onMounted(() => {
   if (!window.YT) {
@@ -21,6 +22,12 @@ onMounted(() => {
     const firstScriptTag = document.getElementsByTagName('script')[0]
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
   }
+  // Try to apply the initial size a few times as players initialize
+  const tryUpdateSizes = (count = 0) => {
+    updateAllPlayersSize()
+    if (count < 30) setTimeout(() => tryUpdateSizes(count + 1), 200)
+  }
+  tryUpdateSizes()
 })
 
 function playAll() {
@@ -43,22 +50,38 @@ function toggleMute() {
     }
   })
 }
+
+function updateAllPlayersSize() {
+  playerRefs.value.forEach(playerRef => {
+    if (playerRef?.setSize) {
+      playerRef.setSize(videoWidth.value)
+    }
+  })
+}
+
+function handleWidthChange(width) {
+  videoWidth.value = width
+  updateAllPlayersSize()
+}
 </script>
 
 <template>
   <v-container fluid>
     <PlayerControls 
       :is-muted="isMuted"
+      :video-width="videoWidth"
       @play-all="playAll"
       @toggle-mute="toggleMute"
+      @update:videoWidth="handleWidthChange"
     />
 
-    <v-row>
+    <v-row class="ma-0" justify="start" align="start">
       <YouTubePlayer
         v-for="(videoId, index) in videoIds"
         :key="videoId"
         :video-id="videoId"
         :index="index"
+        :video-width="videoWidth"
         ref="playerRefs"
       />
     </v-row>
