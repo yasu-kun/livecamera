@@ -12,7 +12,6 @@ const props = defineProps({
 
 const isMuted = ref(false)
 const videoWidth = ref(560)
-const orderVersion = ref(0)
 // Keep a stable map of videoId -> child component instance
 const playerMap = new Map()
 
@@ -73,11 +72,10 @@ watch(
   }
 )
 
-// React to order changes as well
+// React to order changes (without forcing remount)
 watch(
   () => props.videoIds.join(','),
   async () => {
-    orderVersion.value++
     await nextTick()
     setTimeout(() => {
       updateAllPlayersSize()
@@ -105,7 +103,7 @@ function setPlayerRef(id, el) {
     <v-row class="ma-0" justify="start" align="start">
       <YouTubePlayer
         v-for="(videoId, index) in props.videoIds"
-        :key="`${videoId}-${orderVersion}`"
+        :key="videoId"
         :video-id="videoId"
         :video-width="videoWidth"
         :ref="el => setPlayerRef(videoId, el)"
