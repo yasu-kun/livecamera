@@ -11,9 +11,10 @@ const props = defineProps({
 })
 
 const isMuted = ref(false)
-const playerRefs = ref([])
 const videoWidth = ref(560)
 const orderVersion = ref(0)
+// Keep a stable map of videoId -> child component instance
+const playerMap = new Map()
 
 onMounted(() => {
   if (!window.YT) {
@@ -31,32 +32,29 @@ onMounted(() => {
 })
 
 function playAll() {
-  playerRefs.value.forEach(playerRef => {
-    if (playerRef?.playVideo) {
-      playerRef.playVideo()
-    }
+  // To satisfy browser autoplay policies, start muted and stagger starts
+  if (!isMuted.value) {
+    isMuted.value = true
+    props.videoIds.forEach(id => playerMap.get(id)?.mute?.())
+  }
+  props.videoIds.forEach((id, i) => {
+    const playerRef = playerMap.get(id)
+    if (playerRef?.playVideo) setTimeout(() => playerRef.playVideo(), i * 80)
   })
 }
 
 function toggleMute() {
   isMuted.value = !isMuted.value
-  playerRefs.value.forEach(playerRef => {
-    if (playerRef) {
-      if (isMuted.value) {
-        playerRef.mute()
-      } else {
-        playerRef.unMute()
-      }
-    }
+  props.videoIds.forEach(id => {
+    const playerRef = playerMap.get(id)
+    if (!playerRef) return
+    if (isMuted.value) playerRef.mute?.()
+    else playerRef.unMute?.()
   })
 }
 
 function updateAllPlayersSize() {
-  playerRefs.value.forEach(playerRef => {
-    if (playerRef?.setSize) {
-      playerRef.setSize(videoWidth.value)
-    }
-  })
+  props.videoIds.forEach(id => playerMap.get(id)?.setSize?.(videoWidth.value))
 }
 
 function handleWidthChange(width) {
@@ -70,10 +68,7 @@ watch(
     await nextTick()
     setTimeout(() => {
       updateAllPlayersSize()
-      playerRefs.value.forEach(playerRef => {
-        if (!playerRef) return
-        if (isMuted.value && playerRef.mute) playerRef.mute()
-      })
+      if (isMuted.value) props.videoIds.forEach(id => playerMap.get(id)?.mute?.())
     }, 250)
   }
 )
@@ -86,12 +81,15 @@ watch(
     await nextTick()
     setTimeout(() => {
       updateAllPlayersSize()
-      if (isMuted.value) {
-        playerRefs.value.forEach(p => p?.mute && p.mute())
-      }
+      if (isMuted.value) props.videoIds.forEach(id => playerMap.get(id)?.mute?.())
     }, 200)
   }
 )
+
+function setPlayerRef(id, el) {
+  if (el) playerMap.set(id, el)
+  else playerMap.delete(id)
+}
 </script>
 
 <template>
@@ -110,7 +108,7 @@ watch(
         :key="`${videoId}-${orderVersion}`"
         :video-id="videoId"
         :video-width="videoWidth"
-        ref="playerRefs"
+        :ref="el => setPlayerRef(videoId, el)"
       />
     </v-row>
   </v-container>
