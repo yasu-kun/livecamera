@@ -41,6 +41,8 @@ function initializePlayer() {
       modestbranding: 1
     }
   })
+  // Apply current desired size once created
+  setTimeout(() => setSize(props.videoWidth), 0)
 }
 
 function playVideo() {

@@ -1,15 +1,14 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, defineProps, watch, nextTick } from 'vue'
 import YouTubePlayer from './YouTubePlayer.vue'
 import PlayerControls from './PlayerControls.vue'
 
-const videoIds = [
-  'VWpOgCVKoK4',
-  's--MDmshT3I', 
-  'h3pbOPE3kLs',
-  'DU-tsAEboZo',
-  'X6C2hpunZ8c'
-]
+const props = defineProps({
+  videoIds: {
+    type: Array,
+    required: true
+  }
+})
 
 const isMuted = ref(false)
 const playerRefs = ref([])
@@ -63,6 +62,20 @@ function handleWidthChange(width) {
   videoWidth.value = width
   updateAllPlayersSize()
 }
+
+watch(
+  () => props.videoIds.length,
+  async () => {
+    await nextTick()
+    setTimeout(() => {
+      updateAllPlayersSize()
+      playerRefs.value.forEach(playerRef => {
+        if (!playerRef) return
+        if (isMuted.value && playerRef.mute) playerRef.mute()
+      })
+    }, 250)
+  }
+)
 </script>
 
 <template>
@@ -77,7 +90,7 @@ function handleWidthChange(width) {
 
     <v-row class="ma-0" justify="start" align="start">
       <YouTubePlayer
-        v-for="(videoId, index) in videoIds"
+        v-for="(videoId, index) in props.videoIds"
         :key="videoId"
         :video-id="videoId"
         :index="index"
