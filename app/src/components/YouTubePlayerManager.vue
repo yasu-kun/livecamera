@@ -13,6 +13,7 @@ const props = defineProps({
 const isMuted = ref(false)
 const playerRefs = ref([])
 const videoWidth = ref(560)
+const orderVersion = ref(0)
 
 onMounted(() => {
   if (!window.YT) {
@@ -76,6 +77,21 @@ watch(
     }, 250)
   }
 )
+
+// React to order changes as well
+watch(
+  () => props.videoIds.join(','),
+  async () => {
+    orderVersion.value++
+    await nextTick()
+    setTimeout(() => {
+      updateAllPlayersSize()
+      if (isMuted.value) {
+        playerRefs.value.forEach(p => p?.mute && p.mute())
+      }
+    }, 200)
+  }
+)
 </script>
 
 <template>
@@ -91,9 +107,8 @@ watch(
     <v-row class="ma-0" justify="start" align="start">
       <YouTubePlayer
         v-for="(videoId, index) in props.videoIds"
-        :key="videoId"
+        :key="`${videoId}-${orderVersion}`"
         :video-id="videoId"
-        :index="index"
         :video-width="videoWidth"
         ref="playerRefs"
       />

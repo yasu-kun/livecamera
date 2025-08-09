@@ -6,10 +6,6 @@ const props = defineProps({
     type: String,
     required: true
   },
-  index: {
-    type: Number,
-    required: true
-  },
   videoWidth: {
     type: Number,
     default: 560
@@ -31,7 +27,7 @@ onMounted(() => {
 })
 
 function initializePlayer() {
-  player.value = new YT.Player(`player-${props.index}`, {
+  player.value = new YT.Player(`player-${props.videoId}`, {
     height: '315',
     width: '560',
     videoId: props.videoId,
@@ -82,10 +78,7 @@ defineExpose({
 </script>
 
 <template>
-  <v-col
-    cols="auto"
-    class="d-flex pa-0"
-  >
-    <div :id="`player-${index}`"></div>
+  <v-col cols="auto" class="d-flex pa-0">
+    <div :id="`player-${videoId}`"></div>
   </v-col>
 </template>

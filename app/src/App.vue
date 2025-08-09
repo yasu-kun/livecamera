@@ -75,17 +75,15 @@ function moveItem(arr, from, to) {
   return a
 }
 
-function onDragStart(index) {
-  return (e) => {
-    draggingIndex.value = index
-    try {
-      e.dataTransfer?.setData('text/plain', String(index))
-      if (e.dataTransfer) {
-        e.dataTransfer.dropEffect = 'move'
-        e.dataTransfer.effectAllowed = 'move'
-      }
-    } catch (_) {}
-  }
+function onDragStart(index, e) {
+  draggingIndex.value = index
+  try {
+    e.dataTransfer?.setData('text/plain', String(index))
+    if (e.dataTransfer) {
+      e.dataTransfer.dropEffect = 'move'
+      e.dataTransfer.effectAllowed = 'move'
+    }
+  } catch (_) {}
 }
 
 function onDragOver(event) {
@@ -93,12 +91,31 @@ function onDragOver(event) {
   try { if (event.dataTransfer) event.dataTransfer.dropEffect = 'move' } catch (_) {}
 }
 
-function onDrop(index) {
-  return () => {
-    if (draggingIndex.value === null) return
-    videoIds.value = moveItem(videoIds.value, draggingIndex.value, index)
-    draggingIndex.value = null
-  }
+function onDrop(index, event) {
+  event.preventDefault()
+  event.stopPropagation()
+  let from = draggingIndex.value
+  try {
+    const dt = event.dataTransfer?.getData('text/plain')
+    if (dt != null && dt !== '') from = Number(dt)
+  } catch (_) {}
+  if (from === null || Number.isNaN(from)) return
+  videoIds.value = moveItem(videoIds.value, from, index)
+  draggingIndex.value = null
+}
+
+function onDragEnd() {
+  draggingIndex.value = null
+}
+
+function moveUp(index) {
+  if (index <= 0) return
+  videoIds.value = moveItem(videoIds.value, index, index - 1)
+}
+
+function moveDown(index) {
+  if (index >= videoIds.value.length - 1) return
+  videoIds.value = moveItem(videoIds.value, index, index + 1)
 }
 
 // Persist to localStorage (optional convenience)
@@ -168,14 +185,20 @@ watch(videoIds, (val) => {
             :key="id"
             :title="id"
             draggable="true"
-            @dragstart="onDragStart(index)"
-            @dragover="onDragOver"
-            @drop="onDrop(index)"
+            @dragstart.stop="onDragStart(index, $event)"
+            @dragenter.stop.prevent
+            @dragover.stop.prevent
+            @drop.stop.prevent="onDrop(index, $event)"
+            @dragend.stop="onDragEnd"
           >
             <template #prepend>
-              <v-icon class="mr-2">mdi-drag</v-icon>
+              <span class="drag-handle" draggable="true" @dragstart.stop="onDragStart(index, $event)">
+                <v-icon class="mr-2">mdi-drag</v-icon>
+              </span>
             </template>
             <template #append>
+              <v-btn icon="mdi-arrow-up" size="small" variant="text" @click="moveUp(index)"></v-btn>
+              <v-btn icon="mdi-arrow-down" size="small" variant="text" @click="moveDown(index)"></v-btn>
               <v-btn icon="mdi-delete" size="small" variant="text" @click="removeVideo(id)"></v-btn>
             </template>
           </v-list-item>
